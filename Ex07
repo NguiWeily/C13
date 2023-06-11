@@ -1,0 +1,122 @@
+Files to turn in : btree_apply_by_level.c, ft_btree.h
+Allowed functions : malloc, free
+
+• Create a function btree_apply_by_level which applies the function passed as
+argument to each node of the tree. The tree must be browsed level by level. The
+function called will take three arguments :
+◦ The first argument, of type void *, will correspond to the node’s item ;
+◦ The second argument, of type int, corresponds to the level on which we find
+: 0 for root, 1 for children, 2 for grand-children, etc. ;
+◦ The third argument, of type int, is worth 1 if it’s the first node of the level,
+or worth 0 otherwise.
+• Here’s how it should be prototyped :
+void btree_apply_by_level(t_btree *root, void (*applyf)(void *item, int current_level, int is_first_elem))
+
+Here's the code for the `ft_btree.h` file:
+
+```c
+#ifndef FT_BTREE_H
+# define FT_BTREE_H
+
+typedef struct		s_btree
+{
+	struct s_btree	*left;
+	struct s_btree	*right;
+	void			*item;
+}					t_btree;
+
+#endif
+```
+
+And here's a test program for the `btree_apply_by_level` function:
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include "ft_btree.h"
+
+t_btree *btree_create_node(void *item)
+{
+    t_btree *node = malloc(sizeof(t_btree));
+    if (node)
+    {
+        node->item = item;
+        node->left = NULL;
+        node->right = NULL;
+    }
+    return node;
+}
+
+void print_item_by_level(void *item, int current_level, int is_first_elem)
+{
+    if (is_first_elem)
+        printf("Level %d: ", current_level);
+    printf("%s ", (char *)item);
+}
+
+void btree_apply_by_level(t_btree *root, void (*applyf)(void *, int, int))
+{
+    if (root == NULL)
+        return;
+
+    int level = 0;
+    int nodes_in_level = 1;
+    int nodes_in_next_level = 0;
+
+    t_btree *queue[1000]; // Assuming a maximum of 1000 nodes
+    int front = 0;
+    int rear = 0;
+
+    queue[rear] = root;
+    rear++;
+
+    while (front < rear)
+    {
+        t_btree *current = queue[front];
+        front++;
+
+        applyf(current->item, level, nodes_in_level == 1);
+
+        if (current->left)
+        {
+            queue[rear] = current->left;
+            rear++;
+            nodes_in_next_level++;
+        }
+
+        if (current->right)
+        {
+            queue[rear] = current->right;
+            rear++;
+            nodes_in_next_level++;
+        }
+
+        nodes_in_level--;
+        if (nodes_in_level == 0)
+        {
+            level++;
+            nodes_in_level = nodes_in_next_level;
+            nodes_in_next_level = 0;
+        }
+    }
+}
+
+int main()
+{
+    // Create a binary tree
+    t_btree *root = btree_create_node("A");
+    root->left = btree_create_node("B");
+    root->right = btree_create_node("C");
+    root->left->left = btree_create_node("D");
+    root->left->right = btree_create_node("E");
+    root->right->left = btree_create_node("F");
+
+    // Apply the function by level and print the result
+    btree_apply_by_level(root, print_item_by_level);
+    printf("\n");
+
+    return 0;
+}
+```
+
+This test program creates a binary tree with several nodes and uses the `btree_apply_by_level` function to apply the `print_item_by_level` function to each node. The `print_item_by_level` function prints the item along with the level it belongs to. The program then prints the result to the console.
