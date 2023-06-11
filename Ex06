@@ -1,0 +1,87 @@
+Files to turn in : btree_level_count.c, ft_btree.h
+Allowed functions : None
+
+• Create a function btree_level_count which returns the size of the largest branch
+passed as argument.
+• Here’s how it should be prototyped :
+int btree_level_count(t_btree *root);
+
+Here's the implementation of the `btree_level_count` function:
+
+```c
+#include "ft_btree.h"
+
+int max(int a, int b)
+{
+    return (a > b) ? a : b;
+}
+
+int btree_level_count(t_btree *root)
+{
+    if (root == NULL)
+        return 0;
+
+    int left_count = btree_level_count(root->left);
+    int right_count = btree_level_count(root->right);
+
+    return 1 + max(left_count, right_count);
+}
+```
+
+And here's the `ft_btree.h` file:
+
+```c
+#ifndef FT_BTREE_H
+#define FT_BTREE_H
+
+typedef struct s_btree
+{
+    struct s_btree *left;
+    struct s_btree *right;
+    void *item;
+} t_btree;
+
+#endif /* FT_BTREE_H */
+```
+
+You can use this function to calculate the size of the largest branch in a binary tree. The function recursively counts the levels on the left and right subtrees of each node, and returns the maximum count plus one.
+Certainly! Here's a test program for the `btree_level_count` function:
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include "ft_btree.h"
+
+t_btree *btree_create_node(void *item)
+{
+    t_btree *node = malloc(sizeof(t_btree));
+    if (node)
+    {
+        node->item = item;
+        node->left = NULL;
+        node->right = NULL;
+    }
+    return node;
+}
+
+int main()
+{
+    // Create a binary tree
+    t_btree *root = btree_create_node("A");
+    root->left = btree_create_node("B");
+    root->right = btree_create_node("C");
+    root->left->left = btree_create_node("D");
+    root->left->right = btree_create_node("E");
+    root->right->left = btree_create_node("F");
+
+    // Calculate the level count
+    int level_count = btree_level_count(root);
+
+    // Print the result
+    printf("Level count: %d\n", level_count);
+
+    return 0;
+}
+```
+
+This test program creates a binary tree with several nodes and uses the `btree_level_count` function to calculate the level count. It then prints the result to the console.
