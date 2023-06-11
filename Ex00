@@ -1,0 +1,101 @@
+• For the following exercises, we’ll use the following structure :
+typedef struct s_btree
+{
+struct s_btree *left;
+struct s_btree *right;
+void *item;
+} t_btree;
+
+• You’ll have to include this structure in a file ft_btree.h and submit it for each
+exercise.
+• From exercise 01 onward, we’ll use our btree_create_node, so make arrangements
+(it could be useful to have its prototype in a file ft_btree.h...).
+
+Files to turn in : btree_create_node.c, ft_btree.h
+Allowed functions : malloc
+
+• Create the function btree_create_node which allocates a new element. It should
+initialise its item to the argument’s value, and all other elements to 0.
+• The created node’s address is returned.
+• Here’s how it should be prototyped :
+t_btree *btree_create_node(void *item);
+
+Here's the `ft_btree.h` file that includes the `t_btree` structure and the prototype for the `btree_create_node` function:
+
+```c
+#ifndef FT_BTREE_H
+# define FT_BTREE_H
+
+typedef struct s_btree
+{
+    struct s_btree *left;
+    struct s_btree *right;
+    void *item;
+} t_btree;
+
+t_btree *btree_create_node(void *item);
+
+#endif
+```
+
+This file defines the `t_btree` structure and provides the prototype for the `btree_create_node` function.
+
+And here's the implementation of the `btree_create_node` function in `btree_create_node.c`:
+
+```c
+#include <stdlib.h>
+#include "ft_btree.h"
+
+t_btree *btree_create_node(void *item)
+{
+    t_btree *node = (t_btree *)malloc(sizeof(t_btree));
+    if (node)
+    {
+        node->left = NULL;
+        node->right = NULL;
+        node->item = item;
+    }
+    return node;
+}
+```
+
+The `btree_create_node` function allocates memory for a new `t_btree` node, initializes its `item` to the provided value, and sets the `left` and `right` pointers to `NULL`. The function returns the address of the created node.
+
+Remember to include the `ft_btree.h` header file in your test programs and compile them with the `btree_create_node.c` file.
+
+Let me know if you need further assistance!
+
+Certainly! Here's a test program for the `btree_create_node` function:
+
+```c
+#include <stdio.h>
+#include "ft_btree.h"
+
+// Print the item value of a binary tree node
+void print_node_item(t_btree *node)
+{
+    printf("%s\n", (char *)node->item);
+}
+
+int main(void)
+{
+    // Create a new binary tree node with an item value
+    t_btree *node = btree_create_node("Hello, World!");
+
+    // Check if the node was created successfully
+    if (node)
+    {
+        // Print the item value of the node
+        print_node_item(node);
+
+        // Free the allocated memory for the node
+        free(node);
+    }
+
+    return 0;
+}
+```
+
+In this test program, we create a new binary tree node using the `btree_create_node` function with the item value set to `"Hello, World!"`. Then, we check if the node was created successfully and print its item value using the `print_node_item` function. Finally, we free the allocated memory for the node.
+
+Remember to compile this program with the `btree_create_node.c` file and the `ft_btree.h` header file.
