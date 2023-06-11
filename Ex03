@@ -1,0 +1,76 @@
+Files to turn in : btree_apply_suffix.c, ft_btree.h
+Allowed functions : None
+
+• Create a function btree_apply_suffix which applies the function given as argu-
+ment to the item of each node, using suffix traversal to search the tree.
+
+• Here’s how it should be prototyped :
+void btree_apply_suffix(t_btree *root, void (*applyf)(void *));
+
+Certainly! Here's the implementation of the `ft_btree.h` file:
+
+```c
+#ifndef FT_BTREE_H
+#define FT_BTREE_H
+
+typedef struct s_btree
+{
+    struct s_btree *left;
+    struct s_btree *right;
+    void *item;
+} t_btree;
+
+t_btree *btree_create_node(void *item);
+
+#endif
+```
+
+And here's the implementation of the `btree_apply_suffix` function:
+
+```c
+#include "ft_btree.h"
+
+void btree_apply_suffix(t_btree *root, void (*applyf)(void *))
+{
+    if (root)
+    {
+        btree_apply_suffix(root->left, applyf);
+        btree_apply_suffix(root->right, applyf);
+        (*applyf)(root->item);
+    }
+}
+```
+
+The `btree_apply_suffix` function applies the provided function `applyf` to the item of each node in the binary tree, using suffix traversal. It first recursively traverses the left subtree, then the right subtree, and finally applies the function to the current node's item.
+
+Remember to include the `ft_btree.h` header file whenever you use the `t_btree` structure or the `btree_create_node` function.
+Certainly! Here's an example test program for the `btree_create_node` function:
+
+```c
+#include <stdio.h>
+#include "ft_btree.h"
+
+void print_item(void *item)
+{
+    int *value = (int *)item;
+    printf("%d ", *value);
+}
+
+int main()
+{
+    // Test the btree_create_node function
+    int value = 42;
+    t_btree *node = btree_create_node(&value);
+
+    // Print the value of the created node
+    printf("Node item: ");
+    print_item(node->item);
+    printf("\n");
+
+    return 0;
+}
+```
+
+In this example, we create a node with an item value of `42` using the `btree_create_node` function. Then, we print the value of the created node using the `print_item` function.
+
+Remember to include the `ft_btree.h` header file and any other necessary headers when compiling the test program.
