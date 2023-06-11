@@ -1,0 +1,111 @@
+Files to turn in : btree_search_item.c, ft_btree.h
+Allowed functions : None
+
+• Create a function btree_search_item which returns the first element related to
+the reference data given as argument. The tree should be browsed using infix
+traversal . If the element isn’t found, the function should return NULL.
+• Here’s how it should be prototyped :
+void *btree_search_item(t_btree *root, void *data_ref, int (*cmpf)(void *, void *));
+
+Here's the implementation of the `btree_search_item` function:
+
+```c
+#include "ft_btree.h"
+
+void *btree_search_item(t_btree *root, void *data_ref, int (*cmpf)(void *, void *))
+{
+    if (root == NULL)
+        return NULL;
+
+    int cmp_result = cmpf(data_ref, root->item);
+
+    if (cmp_result == 0)
+        return root->item;
+    else if (cmp_result < 0)
+        return btree_search_item(root->left, data_ref, cmpf);
+    else
+        return btree_search_item(root->right, data_ref, cmpf);
+}
+```
+
+And here's the updated `ft_btree.h` file:
+
+```c
+#ifndef FT_BTREE_H
+# define FT_BTREE_H
+
+typedef struct s_btree
+{
+    struct s_btree *left;
+    struct s_btree *right;
+    void *item;
+} t_btree;
+
+t_btree *btree_create_node(void *item);
+void btree_apply_prefix(t_btree *root, void (*applyf)(void *));
+void btree_apply_infix(t_btree *root, void (*applyf)(void *));
+void btree_apply_suffix(t_btree *root, void (*applyf)(void *));
+void btree_insert_data(t_btree **root, void *item, int (*cmpf)(void *, void *));
+void *btree_search_item(t_btree *root, void *data_ref, int (*cmpf)(void *, void *));
+
+#endif
+```
+
+Remember to include the `ft_btree.h` header file in your program and provide your own comparison function based on your data type.
+
+Certainly! Here's a test program to demonstrate the usage of the `btree_search_item` function:
+
+```c
+#include <stdio.h>
+#include "ft_btree.h"
+
+int compare_int(void *a, void *b)
+{
+    int num1 = *(int *)a;
+    int num2 = *(int *)b;
+    return num1 - num2;
+}
+
+void print_int(void *item)
+{
+    int num = *(int *)item;
+    printf("%d ", num);
+}
+
+int main()
+{
+    // Create a sample binary search tree
+    t_btree *root = btree_create_node((void *)5);
+    root->left = btree_create_node((void *)3);
+    root->right = btree_create_node((void *)8);
+    root->left->left = btree_create_node((void *)2);
+    root->left->right = btree_create_node((void *)4);
+    root->right->left = btree_create_node((void *)7);
+    root->right->right = btree_create_node((void *)10);
+
+    // Search for an item in the binary search tree
+    int search_item = 4;
+    void *found_item = btree_search_item(root, (void *)&search_item, compare_int);
+
+    // Print the found item if it exists
+    if (found_item != NULL)
+    {
+        printf("Item %d found in the tree.\n", search_item);
+    }
+    else
+    {
+        printf("Item %d not found in the tree.\n", search_item);
+    }
+
+    // Apply infix traversal to print the elements in the tree
+    printf("Elements in the tree (infix traversal): ");
+    btree_apply_infix(root, print_int);
+    printf("\n");
+
+    return 0;
+}
+```
+
+Make sure to include the `ft_btree.h` header file and provide your own comparison function (`compare_int` in this example) based on your data type.
+
+When you run the program, it will search for the specified item in the binary search tree and print whether it was found or not. It will also print the elements in the tree using infix traversal.
