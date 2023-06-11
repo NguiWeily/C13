@@ -1,0 +1,85 @@
+Files to turn in : btree_apply_prefix.c, ft_btree.h
+Allowed functions : None
+
+• Create a function btree_apply_prefix which applies the function given as argu-
+ment to the item of each node, using prefix traversal to search the tree.
+
+• Here’s how it should be prototyped :
+void btree_apply_prefix(t_btree *root, void (*applyf)(void *));
+
+Sure! Here's the code for the `btree_apply_prefix` function:
+
+```c
+#include "ft_btree.h"
+
+void btree_apply_prefix(t_btree *root, void (*applyf)(void *))
+{
+    if (root)
+    {
+        // Apply the function to the item of the current node
+        (*applyf)(root->item);
+
+        // Recursively apply the function to the left subtree
+        btree_apply_prefix(root->left, applyf);
+
+        // Recursively apply the function to the right subtree
+        btree_apply_prefix(root->right, applyf);
+    }
+}
+```
+
+In this function, we perform a prefix traversal of the binary tree. For each node, we apply the provided function `applyf` to its item. Then, we recursively traverse the left subtree and the right subtree, applying the function in a pre-order manner.
+
+Make sure to include the `ft_btree.h` header file in your program.
+Certainly! Here's the code for the `ft_btree.h` file:
+
+```c
+#ifndef FT_BTREE_H
+# define FT_BTREE_H
+
+typedef struct	s_btree
+{
+	struct s_btree	*left;
+	struct s_btree	*right;
+	void			*item;
+}				t_btree;
+
+t_btree	*btree_create_node(void *item);
+
+#endif /* FT_BTREE_H */
+```
+
+This `ft_btree.h` file defines the structure `t_btree` and declares the `btree_create_node` function. You can include this header file in your program to use the `t_btree` structure and the `btree_create_node` function.
+Certainly! Here's an example test program for the `btree_apply_prefix` function:
+
+```c
+#include <stdio.h>
+#include "ft_btree.h"
+
+void print_item(void *item)
+{
+    printf("%d ", *(int *)item);
+}
+
+int main()
+{
+    // Create a binary tree
+    t_btree *root = btree_create_node((void *)1);
+    root->left = btree_create_node((void *)2);
+    root->right = btree_create_node((void *)3);
+    root->left->left = btree_create_node((void *)4);
+    root->left->right = btree_create_node((void *)5);
+
+    // Apply the print_item function using prefix traversal
+    btree_apply_prefix(root, print_item);
+    printf("\n");
+
+    return 0;
+}
+```
+
+In this example, we create a binary tree with integer values and apply the `print_item` function using the `btree_apply_prefix` function. The `print_item` function simply prints the value of each node's item. The prefix traversal ensures that the items are printed in the correct order.
+
+Make sure to include the `ft_btree.h` header file in your program to use the `t_btree` structure and the `btree_apply_prefix` function.
+
+Feel free to modify the code according to your needs. Let me know if you have any further questions!
